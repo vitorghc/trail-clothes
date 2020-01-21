@@ -28,13 +28,14 @@ public class TrailClothesService {
 	}
 
 	public ClothesResponse saveClothes(ClothesRequest request) {
-		Clothes clothes = trailClothesRepository.save(Clothes.builder()
-				.name(request.getName())
-				.description(request.getDescription())
-				.price(request.getPrice())
-				.category(request.getCategory())
-				.build());
-		return ClothesResponse.toResponse(clothes);
+		try {
+			Clothes clothes = trailClothesRepository
+					.save(Clothes.builder().name(request.getName()).description(request.getDescription())
+							.price(request.getPrice()).category(request.getCategory()).build());
+			return ClothesResponse.toResponse(clothes);
+		} catch (Exception e) {
+			throw new InternalServerErrorException("Error wwhile trying to save clothes: " + e);
+		}
 	}
 	
 	public ClothesResponse getClothesById(String id) {
