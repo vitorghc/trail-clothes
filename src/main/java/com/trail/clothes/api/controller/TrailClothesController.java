@@ -38,4 +38,16 @@ public class TrailClothesController {
 		ClothesResponse response = trailClothesService.saveClothes(request);
 		return ResponseEntity.created(uriBuilder.path("/clothes/{clothesId}").buildAndExpand(response.getId()).toUri()).build();
 	}
+	
+	@RequestMapping(value = "/clothes/{clothesId}", method = RequestMethod.PUT)
+	public ResponseEntity<Void> alterClothes(@Valid @RequestBody ClothesRequest request, @PathVariable String clothesId) {
+		trailClothesService.alterClothes(request, clothesId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value = "/clothes/{clothesId}", method = RequestMethod.DELETE)
+	public ResponseEntity<ClothesResponse> deleteClothesById(@PathVariable String clothesId) {
+		trailClothesService.deleteClothesById(clothesId);
+		return ResponseEntity.noContent().build();
+	}
 }

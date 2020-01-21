@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.trail.clothes.api.excepton.http.InternalServerErrorException;
 import com.trail.clothes.api.excepton.http.NotFoundException;
+import com.trail.clothes.api.excepton.http.UnprocessableEntityException;
 import com.trail.clothes.api.json.response.ResponseMessage;
 
 @RestControllerAdvice
@@ -44,6 +45,12 @@ public class ControllerAdvice {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ResponseMessage genericServerError(Exception ex) {
 		return ResponseMessage.builder().code("Internal Server Error").message(ex.getMessage()).build();
+	}
+	
+	@ExceptionHandler(UnprocessableEntityException.class)
+	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+	public ResponseMessage unprocessableEntity(UnprocessableEntityException ex) {
+		return ResponseMessage.builder().code("Unprocessable Entity").message(ex.getError()).build();
 	}
 
 }
