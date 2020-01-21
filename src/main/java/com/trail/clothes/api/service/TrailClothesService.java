@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.trail.clothes.api.json.request.ClothesRequest;
 import com.trail.clothes.api.json.response.ClothesResponse;
 import com.trail.clothes.api.model.Clothes;
 import com.trail.clothes.api.repository.TrailClothesRepository;
@@ -22,6 +23,17 @@ public class TrailClothesService {
 				.map(ClothesResponse::toResponse)
 				.collect(Collectors.toList());
 		return clothesResponse;
+	}
+	
+
+	public ClothesResponse saveClothes(ClothesRequest request) {
+		Clothes clothes = trailClothesRepository.save(Clothes.builder()
+				.name(request.getName())
+				.description(request.getDescription())
+				.price(request.getPrice())
+				.category(request.getCategory())
+				.build());
+		return ClothesResponse.toResponse(clothes);
 	}
 	
 	public ClothesResponse getClothesById(String id) throws NotFoundException {
