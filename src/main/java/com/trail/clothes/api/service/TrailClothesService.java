@@ -8,6 +8,7 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.trail.clothes.api.excepton.ClothesNotFoundException;
+import com.trail.clothes.api.excepton.http.InternalServerErrorException;
 import com.trail.clothes.api.json.request.ClothesRequest;
 import com.trail.clothes.api.json.response.ClothesResponse;
 import com.trail.clothes.api.model.Clothes;
@@ -36,12 +37,14 @@ public class TrailClothesService {
 		return ClothesResponse.toResponse(clothes);
 	}
 	
-	public ClothesResponse getClothesById(String id) throws ClothesNotFoundException {
+	public ClothesResponse getClothesById(String id) {
 		try {
 			Clothes clothesResponse = trailClothesRepository.findById(id).orElseThrow(NotFoundException::new);
 			return ClothesResponse.toResponse(clothesResponse);
 		} catch (NotFoundException e) {
 			throw new ClothesNotFoundException();
+		} catch (Exception e) {
+			throw new InternalServerErrorException("Error wwhile trying to get clothes by id: " + e);
 		}
 	}
 	

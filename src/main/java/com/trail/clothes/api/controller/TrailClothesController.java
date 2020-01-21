@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +29,7 @@ public class TrailClothesController {
 	}
 	
 	@RequestMapping("/clothes/{clothesId}")
-	public ResponseEntity<ClothesResponse> getClothesById(@PathVariable String clothesId) throws NotFoundException {
+	public ResponseEntity<ClothesResponse> getClothesById(@PathVariable String clothesId) {
 		return ResponseEntity.ok().body(trailClothesService.getClothesById(clothesId));
 	}
 	
