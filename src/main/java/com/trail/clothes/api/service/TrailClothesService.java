@@ -64,6 +64,7 @@ public class TrailClothesService {
 	public void alterClothes(ClothesRequest request, String clothesId) {
 		try {
 			trailClothesRepository.findById(clothesId).orElseThrow(NotFoundException::new);
+			verifyClothesNameExists(request);
 			trailClothesRepository.save(Clothes.builder().id(clothesId)
 					.name(request.getName())
 					.description(request.getDescription())
@@ -72,6 +73,8 @@ public class TrailClothesService {
 					.build());
 		} catch (NotFoundException e) {
 			throw new ClothesNotFoundException();
+		} catch (UnprocessableEntityException e) {
+			throw new ClothesNameAlreadyExistsException();
 		} catch (Exception e) {
 			throw new InternalServerErrorException("Error wwhile trying to alter clothes: " + e.getMessage());
 		}
@@ -86,6 +89,28 @@ public class TrailClothesService {
 		} catch (Exception e) {
 			throw new InternalServerErrorException("Error wwhile trying to delete clothes: " + e.getMessage());
 		}
+	}
+	
+	public void alterPartialClothes(ClothesRequest request, String clothesId) {
+		try {
+			Clothes clothesDomain = trailClothesRepository.findById(clothesId).orElseThrow(NotFoundException::new);
+			verifyClothesNameExists(request);
+			updatePartialUpdate(clothesDomain, request);
+		} catch (NotFoundException e) {
+			throw new ClothesNotFoundException();
+		} catch (UnprocessableEntityException e) {
+			throw new ClothesNameAlreadyExistsException();
+		} catch (Exception e) {
+			throw new InternalServerErrorException("Error wwhile trying to alter clothes: " + e.getMessage());
+		}
+	}
+
+	private void updatePartialUpdate(Clothes clothesDomain, ClothesRequest requestClothes) {
+		clothesDomain.setName(requestClothes.getName() == null ? clothesDomain.getName() : requestClothes.getName());
+		clothesDomain.setDescription(requestClothes.getDescription() == null ? clothesDomain.getDescription() : requestClothes.getDescription());
+		clothesDomain.setPrice(requestClothes.getPrice() == null ? clothesDomain.getPrice() : requestClothes.getPrice());
+		clothesDomain.setCategory(requestClothes.getCategory() == null ? clothesDomain.getCategory() : requestClothes.getCategory());
+		trailClothesRepository.save(clothesDomain);
 	}
 
 	private void verifyClothesNameExists(ClothesRequest request) {
