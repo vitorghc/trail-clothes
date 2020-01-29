@@ -1,4 +1,4 @@
-package com.trail.clothes.api.excepton;
+package com.trail.clothes.api.exception;
 
 import com.trail.clothes.api.excepton.http.NotFoundException;
 

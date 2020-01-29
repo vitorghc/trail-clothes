@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.trail.clothes.api.excepton.ClothesNameAlreadyExistsException;
-import com.trail.clothes.api.excepton.ClothesNotFoundException;
+import com.trail.clothes.api.exception.ClothesNameAlreadyExistsException;
+import com.trail.clothes.api.exception.ClothesNotFoundException;
 import com.trail.clothes.api.excepton.http.InternalServerErrorException;
 import com.trail.clothes.api.excepton.http.UnprocessableEntityException;
 import com.trail.clothes.api.json.request.ClothesRequest;

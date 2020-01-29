@@ -13,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.trail.clothes.api.excepton.ClothesNotFoundException;
+import com.trail.clothes.api.exception.TrailClothesServerErrorException;
+import com.trail.clothes.api.excepton.http.InternalServerErrorException;
+import com.trail.clothes.api.excepton.http.NotFoundException;
 import com.trail.clothes.api.json.response.ClothesResponse;
 import com.trail.clothes.api.model.Clothes;
 import com.trail.clothes.api.repository.TrailClothesRepository;
@@ -23,55 +25,65 @@ public class TrailClothesServiceTest {
 
 	@Mock
 	private TrailClothesRepository trailClothesRepository;
-	
+
 	@InjectMocks
 	private TrailClothesService trailClothesService;
-	
+
 	private List<ClothesResponse> responseGetClothes;
-	
-	
+
 	@Test
 	public void getTrailClothesFromRepository() {
 		givenFindAllFromRepositoryReturnValue();
 		whenCallFindAll();
 		thenExpectNotNullReturnFromGetClothes();
 	}
-	
-	@Test(expected = ClothesNotFoundException.class)
+
+	@Test(expected = NotFoundException.class)
 	public void getTrailClothesFromRepositoryReturnNotFound() {
 		givenFindAllFromRepositoryReturnNotFondException();
 		whenCallFindAll();
-		thenExpectNotFoundException();
+		thenExpectClothesNotFoundException();
 	}
 	
+	@Test(expected = InternalServerErrorException.class)
+	public void getTrailClothesFromRepositoryReturnInternalServerError() {
+		givenFindAllFromRepositoryReturnTrailClothesServerErrorException();
+		whenCallFindAll();
+		thenExpectTrailClothesServerErrorException();
+	}
 
-	//given
+	
+	// given
 	private void givenFindAllFromRepositoryReturnNotFondException() {
 		when(trailClothesRepository.findAll()).thenReturn(new ArrayList<>());
 	}
 	
-	private void givenFindAllFromRepositoryReturnValue() {
-		when(trailClothesRepository.findAll()).thenReturn(Arrays.asList(Clothes.builder()
-				.id("1")
-				.name("teste")
-				.description("teste")
-				.price(1D)
-				.category("teste")
-				.build()));
+	private void givenFindAllFromRepositoryReturnTrailClothesServerErrorException() {
+		when(trailClothesRepository.findAll()).thenThrow(TrailClothesServerErrorException.class);
 	}
-	
-	//when
+
+
+	private void givenFindAllFromRepositoryReturnValue() {
+		when(trailClothesRepository.findAll()).thenReturn(Arrays.asList(
+				Clothes.builder().id("1").name("teste").description("teste").price(1D).category("teste").build()));
+	}
+
+	// when
 	private void whenCallFindAll() {
 		responseGetClothes = trailClothesService.getClothes();
 	}
-	
-	
-	//then
+
+	// then
 	private void thenExpectNotNullReturnFromGetClothes() {
 		assertThat(responseGetClothes).isNotEmpty();
-		
 	}
 	
-	private void thenExpectNotFoundException() {
+	private void thenExpectClothesNotFoundException() {
+		// Expect Clothes NotFound Exception
 	}
+	
+	private void thenExpectTrailClothesServerErrorException() {
+		// Expect Trail Clothes Server Error Exception
+	}
+
 }
